@@ -9,6 +9,7 @@ import {
 
 import { client } from "./graphql/client";
 import { TopHeadlines } from "./graphql/queries";
+import { ArticleRow } from "./components/ArticleRow";
 
 const styles = StyleSheet.create({
   headerText: {
@@ -17,7 +18,7 @@ const styles = StyleSheet.create({
     fontSize: 40,
     paddingHorizontal: 10,
     marginBottom: 30,
-    marginTop: 10,
+    marginTop: 30,
   },
 });
 
@@ -38,6 +39,10 @@ class App extends React.Component {
       })
       .then((response) => {
         console.log("response", response);
+        this.setState({
+          loading: response.loading,
+          articles: response.data.headlines.articles,
+        });
       })
       .catch((err) => {
         console.log("error", error);
@@ -60,7 +65,10 @@ class App extends React.Component {
           ListHeaderComponent={
             <Text style={styles.headerText}>Top Headlines</Text>
           }
-          renderItem={() => null}
+          renderItem={({ item, index }) => (
+            <ArticleRow index={index} {...item} />
+          )}
+          keyExtractor={(item) => `${item.publishedAt}-${item.title}`}
           ListFooterComponent={this.renderFooter()}
         />
       </SafeAreaView>
