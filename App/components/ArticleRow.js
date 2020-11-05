@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  Linking,
+  // Linking,
+  Modal,
 } from "react-native";
 import formatDistanceStrict from "date-fns/formatDistanceStrict";
+
+import { EmbeddedWebView } from "./EmbeddedWebView";
 
 const styles = StyleSheet.create({
   row: {
@@ -49,23 +52,31 @@ const styles = StyleSheet.create({
   },
 });
 
-const openLink = (url) => {
-  Linking.canOpenURL(url)
-    .then((supported) => {
-      if (!supported) {
-        return alert("Sorry, something went wrong!");
-      }
+// const openLink = (url) => {
+//   Linking.canOpenURL(url)
+//     .then((supported) => {
+//       if (!supported) {
+//         return alert("Sorry, something went wrong!");
+//       }
 
-      return Linking.openURL(url);
-    })
-    .catch((err) => {
-      return alert("Sorry, something went wrong!");
-    });
-};
+//       return Linking.openURL(url);
+//     })
+//     .catch((err) => {
+//       return alert("Sorry, something went wrong!");
+//     });
+// };
 
 export const ArticleRow = ({ title, publishedAt, source, index, url }) => {
+  const [modalVisible, setModalVisible] = useState(false);
   return (
-    <TouchableOpacity onPress={() => openLink(url)}>
+    <TouchableOpacity onPress={() => setModalVisible(true)}>
+      <Modal animationType="slide" transparent visible={modalVisible}>
+        <TouchableOpacity
+          style={{ flex: 1, backgroundColor: "rgba(0, 0, 0, 0.25)" }}
+          onPress={() => setModalVisible(false)}
+        />
+        <EmbeddedWebView url={url} />
+      </Modal>
       <View style={styles.row}>
         <View style={styles.numberContainer}>
           <Text style={styles.number}>{index + 1}</Text>
