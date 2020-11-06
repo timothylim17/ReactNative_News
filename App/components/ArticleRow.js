@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
   },
 });
 
+// Use Linking from react-native to open url on browser
 // const openLink = (url) => {
 //   Linking.canOpenURL(url)
 //     .then((supported) => {
@@ -72,7 +73,7 @@ export const ArticleRow = ({ title, publishedAt, source, index, url }) => {
     <TouchableOpacity onPress={() => setModalVisible(true)}>
       <Modal animationType="slide" transparent visible={modalVisible}>
         <TouchableOpacity
-          style={{ flex: 1, backgroundColor: "rgba(0, 0, 0, 0.25)" }}
+          style={{ flex: 1 }}
           onPress={() => setModalVisible(false)}
         />
         <EmbeddedWebView url={url} />
