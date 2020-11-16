@@ -5,11 +5,13 @@ import {
   Text,
   StyleSheet,
   ActivityIndicator,
+  View,
 } from "react-native";
 
-import { client } from "./graphql/client";
-import { TopHeadlines } from "./graphql/queries";
-import { ArticleRow } from "./components/ArticleRow";
+import { client } from "news/App/graphql/client";
+import { TopHeadlines } from "news/App/graphql/queries";
+import { ArticleRow } from "news/App/components/ArticleRow";
+import { SearchBar } from "news/App/components/SearchBar";
 
 const styles = StyleSheet.create({
   headerText: {
@@ -18,7 +20,7 @@ const styles = StyleSheet.create({
     fontSize: 40,
     paddingHorizontal: 10,
     marginBottom: 30,
-    marginTop: 30,
+    marginTop: 10,
   },
 });
 
@@ -26,27 +28,28 @@ class App extends React.Component {
   state = {
     articles: [],
     loading: true,
+    category: "technology",
   };
 
   componentDidMount() {
-    this.requestTopHeadlines();
+    this.requestTopHeadlines(this.state.category);
   }
 
-  requestTopHeadlines = () => {
+  requestTopHeadlines = (category) => {
     client
       .query({
         query: TopHeadlines,
-        variables: { category: "technology" },
+        variables: { category },
       })
-      .then((response) => {
-        console.log("response", response);
+      .then((res) => {
+        console.log("response", res);
         this.setState({
-          loading: response.loading,
-          articles: response.data.headlines.articles,
+          loading: res.loading,
+          articles: res.data.headlines.articles,
         });
       })
-      .catch((err) => {
-        console.log("error", error);
+      .catch((e) => {
+        console.log(e);
       });
   };
 
@@ -59,12 +62,20 @@ class App extends React.Component {
   };
 
   render() {
+    const { articles, category } = this.state;
     return (
       <SafeAreaView>
         <FlatList
-          data={this.state.articles}
+          data={articles}
           ListHeaderComponent={
-            <Text style={styles.headerText}>Top Headlines</Text>
+            <View>
+              <Text style={styles.headerText}>Top Headlines</Text>
+              <SearchBar
+                onSearch={() => this.requestTopHeadlines(category)}
+                searchButtonEnabled={category.length >= 1}
+                onChangeText={(text) => this.setState({ category: text })}
+              />
+            </View>
           }
           renderItem={({ item, index }) => (
             <ArticleRow index={index} {...item} />
