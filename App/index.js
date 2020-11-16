@@ -6,6 +6,8 @@ import {
   StyleSheet,
   ActivityIndicator,
   View,
+  TouchableOpacity,
+  Image,
 } from "react-native";
 
 import { client } from "news/App/graphql/client";
@@ -19,8 +21,18 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 40,
     paddingHorizontal: 10,
-    marginBottom: 30,
-    marginTop: 10,
+    marginBottom: 10,
+    marginTop: 20,
+  },
+  searchButton: {
+    width: 25,
+    height: 25,
+    marginRight: 10,
+    position: "relative",
+    textAlignVertical: "auto",
+    tintColor: "#ff8d01",
+    flex: 1,
+    flexDirection: "row",
   },
 });
 
@@ -29,6 +41,7 @@ class App extends React.Component {
     articles: [],
     loading: true,
     category: "technology",
+    searchOpen: false,
   };
 
   componentDidMount() {
@@ -62,7 +75,7 @@ class App extends React.Component {
   };
 
   render() {
-    const { articles, category } = this.state;
+    const { articles, category, searchOpen } = this.state;
     return (
       <SafeAreaView>
         <FlatList
@@ -70,11 +83,24 @@ class App extends React.Component {
           ListHeaderComponent={
             <View>
               <Text style={styles.headerText}>Top Headlines</Text>
-              <SearchBar
-                onSearch={() => this.requestTopHeadlines(category)}
-                searchButtonEnabled={category.length >= 1}
-                onChangeText={(text) => this.setState({ category: text })}
-              />
+              {searchOpen ? (
+                <SearchBar
+                  onSearch={() => this.requestTopHeadlines(category)}
+                  searchButtonEnabled={category.length >= 1}
+                  onChangeText={(text) => this.setState({ category: text })}
+                  onPress={() => this.setState({ searchOpen: !searchOpen })}
+                />
+              ) : (
+                <TouchableOpacity
+                  onPress={() => this.setState({ searchOpen: !searchOpen })}
+                >
+                  <Image
+                    source={require("./assets/search.png")}
+                    resizeMode="contain"
+                    style={styles.searchButton}
+                  />
+                </TouchableOpacity>
+              )}
             </View>
           }
           renderItem={({ item, index }) => (

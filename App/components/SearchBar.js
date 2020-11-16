@@ -3,7 +3,8 @@ import { View, TextInput, Image, TouchableOpacity, Text } from "react-native";
 
 export const SearchBar = ({
   onSearch,
-  searchButtonEnabled = false,
+  searchButtonEnabled,
+  onPress = false,
   ...props
 }) => (
   <View
@@ -20,16 +21,18 @@ export const SearchBar = ({
       alignItems: "center",
     }}
   >
-    <Image
-      source={require("../assets/search.png")}
-      resizeMode="contain"
-      style={{
-        width: 20,
-        height: 20,
-        marginRight: 10,
-        tintColor: "rgba(0, 0, 0, 0.4)",
-      }}
-    />
+    <TouchableOpacity onPress={onPress}>
+      <Image
+        source={require("../assets/close.png")}
+        resizeMode="contain"
+        style={{
+          width: 20,
+          height: 20,
+          marginRight: 10,
+          tintColor: "rgba(0, 0, 0, 0.4)",
+        }}
+      />
+    </TouchableOpacity>
     <TextInput
       style={{
         fontSize: 18,
